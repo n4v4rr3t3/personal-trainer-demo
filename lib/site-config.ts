@@ -29,7 +29,7 @@ export const siteConfig: StorefrontConfig = {
     image: "/trainer-hero.webp",
   },
   contact: {
-    whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "5492236192291",
+    whatsapp: "5492236192291",
     instagram: "https://www.instagram.com/cuerpoenconstruccion_/",
   },
   services: [
