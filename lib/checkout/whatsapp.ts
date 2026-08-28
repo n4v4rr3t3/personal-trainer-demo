@@ -3,8 +3,11 @@ import type { CheckoutContext, CheckoutProvider } from "./types";
 
 export class WhatsAppCheckoutProvider implements CheckoutProvider {
   readonly id = "whatsapp";
+  private readonly phone: string;
 
-  constructor(private readonly phone: string) {}
+  constructor(phone: string) {
+    this.phone = phone;
+  }
 
   createCheckout(services: Service[], context: CheckoutContext) {
     const selected = services.map((service) => `• ${service.name} — ${service.format}`).join("\n");
@@ -20,6 +23,6 @@ export class WhatsAppCheckoutProvider implements CheckoutProvider {
     ].join("\n");
 
     const digits = this.phone.replace(/\D/g, "");
-    return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
+    return `https://api.whatsapp.com/send?phone=${digits}&text=${encodeURIComponent(message)}`;
   }
 }
