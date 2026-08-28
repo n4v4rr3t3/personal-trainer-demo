@@ -26,10 +26,9 @@ export function Storefront({ config }: { config: StorefrontConfig }) {
     toast.success(selected ? "Servicio quitado" : "Servicio agregado", { description: service.name });
   }
 
-  function finishCheckout() {
-    if (!cart.length) return;
-    window.open(checkout.createCheckout(cart, { brandName: config.brand.name, customerNote: note }), "_blank", "noopener,noreferrer");
-  }
+  const checkoutUrl = cart.length
+    ? checkout.createCheckout(cart, { brandName: config.brand.name, customerNote: note })
+    : "#";
 
   return (
     <main>
@@ -44,7 +43,7 @@ export function Storefront({ config }: { config: StorefrontConfig }) {
           <a href="#como-funciona">Cómo funciona</a>
           <a href={config.contact.instagram} target="_blank" rel="noreferrer">Instagram</a>
         </nav>
-        <CartSheet cart={cart} cartOpen={cartOpen} setCartOpen={setCartOpen} note={note} setNote={setNote} remove={toggleService} finish={finishCheckout} />
+        <CartSheet cart={cart} cartOpen={cartOpen} setCartOpen={setCartOpen} note={note} setNote={setNote} remove={toggleService} checkoutUrl={checkoutUrl} />
       </header>
 
       <section className="hero" id="inicio">
@@ -114,9 +113,9 @@ export function Storefront({ config }: { config: StorefrontConfig }) {
   );
 }
 
-function CartSheet({ cart, cartOpen, setCartOpen, note, setNote, remove, finish }: {
+function CartSheet({ cart, cartOpen, setCartOpen, note, setNote, remove, checkoutUrl }: {
   cart: Service[]; cartOpen: boolean; setCartOpen: (open: boolean) => void; note: string;
-  setNote: (note: string) => void; remove: (service: Service) => void; finish: () => void;
+  setNote: (note: string) => void; remove: (service: Service) => void; checkoutUrl: string;
 }) {
   return (
     <Sheet open={cartOpen} onOpenChange={setCartOpen}>
@@ -135,7 +134,20 @@ function CartSheet({ cart, cartOpen, setCartOpen, note, setNote, remove, finish 
             </>
           )}
         </div>
-        <SheetFooter className="cart-footer"><Button className="whatsapp-button" disabled={!cart.length} onClick={finish}>Consultar por WhatsApp <ArrowRight /></Button><p>No se realiza ningún cobro en esta instancia.</p></SheetFooter>
+        <SheetFooter className="cart-footer">
+          {cart.length ? (
+            <Button asChild className="whatsapp-button">
+              <a href={checkoutUrl} target="_blank" rel="noopener noreferrer">
+                Consultar por WhatsApp <ArrowRight />
+              </a>
+            </Button>
+          ) : (
+            <Button className="whatsapp-button" disabled>
+              Consultar por WhatsApp <ArrowRight />
+            </Button>
+          )}
+          <p>No se realiza ningún cobro en esta instancia.</p>
+        </SheetFooter>
       </SheetContent>
     </Sheet>
   );
